@@ -1,0 +1,142 @@
+Class {
+	#name : #BufSToken,
+	#superclass : #Object,
+	#instVars : [
+		'type',
+		'data',
+		'start',
+		'end'
+	],
+	#category : #BufScheme
+}
+
+{ #category : #'as yet unclassified' }
+BufSToken class >> nextTokenFromStream: aStream [
+	
+	| maybeToken returnBlock |
+	maybeToken := self tryToEat: self numRegex typedAs: #num from: aStream.
+	returnBlock := [ self tryToEat: self spaceRegex typedAs: #ignored from: aStream. ^maybeToken ].
+	maybeToken ifNotNil: returnBlock.
+	maybeToken := self tryToEat: self symbolRegex typedAs: #symbol from: aStream.
+	maybeToken ifNotNil: returnBlock.
+	maybeToken := self tryToEat: self specialCharRegex typedAs: #special from: aStream.
+	maybeToken ifNotNil: returnBlock.
+	^nil
+	
+				
+	
+]
+
+{ #category : #regexes }
+BufSToken class >> numRegex [
+	"regex identifying a BufScheme number"	
+			
+	^'\d+' asRegex 
+]
+
+{ #category : #regexes }
+BufSToken class >> spaceRegex [
+	"regex identifying BufScheme whitespace (skipped, but seperates tokens)"	
+			
+	^'\s+' asRegex 
+]
+
+{ #category : #regexes }
+BufSToken class >> specialCharRegex [
+	"symbols with special scheme meaning"	
+			
+	^'[()"'']' asRegex 
+]
+
+{ #category : #regexes }
+BufSToken class >> symbolRegex [
+	"regex identifying a BufScheme (unquoted) symbol"	
+			
+	^'[[:alnum:]+\-*/]+' asRegex 
+]
+
+{ #category : #accessing }
+BufSToken class >> tokenizeStream: aStream toCollection: aCollection [
+
+	aStream atEnd ifTrue: [ ^ self ].
+	aCollection add: (self nextTokenFromStream: aStream).
+	self tokenizeStream: aStream toCollection: aCollection
+]
+
+{ #category : #'as yet unclassified' }
+BufSToken class >> tokenizeString: aString [
+
+	|result|
+	result := OrderedCollection new.
+	self tokenizeStream: aString readStream toCollection: result.
+	^result
+]
+
+{ #category : #'as yet unclassified' }
+BufSToken class >> tryToEat: aRegex typedAs: aSymbol from: aStream [
+	
+	|oldPos|
+	oldPos := aStream position.
+	(aRegex matchesStreamPrefix: aStream) ifTrue: [ 
+		^self new newTokenType: aSymbol 
+					 data: (aRegex subexpression: 1)
+					 from: oldPos
+					 to: aStream position ].
+	aStream position: oldPos.
+	^nil
+				
+	
+]
+
+{ #category : #accessing }
+BufSToken >> data [
+
+	^ data
+]
+
+{ #category : #accessing }
+BufSToken >> end [
+
+	^ end
+]
+
+{ #category : #testing }
+BufSToken >> isNumToken [
+
+	^type = #num
+]
+
+{ #category : #testing }
+BufSToken >> isSpecial: aChar [
+
+	^type = #special and: data = aChar
+]
+
+{ #category : #testing }
+BufSToken >> isSymbolToken [
+
+	^type = #symbol
+]
+
+{ #category : #'instance creation' }
+BufSToken >> newTokenType: symbol data: aString from: startIndex to:  endIndex [
+	"Creates a new token.  Probably best to call this from clas methods."
+
+	type := symbol.
+	data := aString.
+	start := startIndex.
+	end := endIndex.
+
+]
+
+{ #category : #accessing }
+BufSToken >> start [
+
+	^ start
+]
+
+{ #category : #accessing }
+BufSToken >> type [
+
+	^ type
+]
