@@ -11,20 +11,34 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
+BufSToken class >> consumeSpaces: aStream [
+
+	self tryToEat: self spaceRegex typedAs: #ignored from: aStream
+]
+
+{ #category : #'as yet unclassified' }
 BufSToken class >> nextTokenFromStream: aStream [
-	
+
 	| maybeToken returnBlock |
-	maybeToken := self tryToEat: self numRegex typedAs: #num from: aStream.
-	returnBlock := [ self tryToEat: self spaceRegex typedAs: #ignored from: aStream. ^maybeToken ].
+	maybeToken := self
+		              tryToEat: self numRegex
+		              typedAs: #num
+		              from: aStream.
+	returnBlock := [ 
+	               self consumeSpaces: aStream.
+	               ^ maybeToken ].
 	maybeToken ifNotNil: returnBlock.
-	maybeToken := self tryToEat: self symbolRegex typedAs: #symbol from: aStream.
+	maybeToken := self
+		              tryToEat: self symbolRegex
+		              typedAs: #symbol
+		              from: aStream.
 	maybeToken ifNotNil: returnBlock.
-	maybeToken := self tryToEat: self specialCharRegex typedAs: #special from: aStream.
+	maybeToken := self
+		              tryToEat: self specialCharRegex
+		              typedAs: #special
+		              from: aStream.
 	maybeToken ifNotNil: returnBlock.
-	^nil
-	
-				
-	
+	BufSParseException new signal: 'characters do not match any token'
 ]
 
 { #category : #regexes }
@@ -66,9 +80,11 @@ BufSToken class >> tokenizeStream: aStream toCollection: aCollection [
 { #category : #'as yet unclassified' }
 BufSToken class >> tokenizeString: aString [
 
-	|result|
+	|result stream|
 	result := OrderedCollection new.
-	self tokenizeStream: aString readStream toCollection: result.
+	stream := aString readStream.
+	self consumeSpaces: stream.
+	self tokenizeStream: stream toCollection: result.
 	^result
 ]
 

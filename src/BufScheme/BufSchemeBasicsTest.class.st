@@ -1,8 +1,55 @@
 Class {
 	#name : #BufSchemeBasicsTest,
 	#superclass : #TestCase,
+	#instVars : [
+		'parser'
+	],
 	#category : #BufScheme
 }
+
+{ #category : #running }
+BufSchemeBasicsTest >> setUp [
+	super setUp.
+	parser := BufSParser new.
+]
+
+{ #category : #tests }
+BufSchemeBasicsTest >> testBadTokenize [
+
+	self should: [ BufSToken tokenizeString: '{' ] raise: BufSParseException.
+
+]
+
+{ #category : #tests }
+BufSchemeBasicsTest >> testExtraTokens [
+
+	"we should allow extra whitespace"
+	self shouldnt: [parser parseString: '   foobar   '] raise: BufSParseException.
+	"we should not allow extra tokens"
+	self should: [ parser parseString: 'foobar foobar'] raise: BufSParseException
+
+
+]
+
+{ #category : #tests }
+BufSchemeBasicsTest >> testParseNum [
+
+	|result|
+	result := parser parseString: '123'.
+	self assert: result litValue equals: 123.
+
+
+]
+
+{ #category : #tests }
+BufSchemeBasicsTest >> testParseVarExp [
+
+	|result|
+	result := parser parseString: 'foobar'.
+	self assert: result name equals: 'foobar'.
+
+
+]
 
 { #category : #tests }
 BufSchemeBasicsTest >> testTokenizeNum [
