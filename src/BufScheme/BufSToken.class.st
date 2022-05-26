@@ -38,7 +38,7 @@ BufSToken class >> nextTokenFromStream: aStream [
 		              typedAs: #special
 		              from: aStream.
 	maybeToken ifNotNil: returnBlock.
-	BufSParseException new signal: 'characters do not match any token'
+	BufSParseError new signal: 'characters do not match any token'
 ]
 
 { #category : #regexes }

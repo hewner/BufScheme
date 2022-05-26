@@ -16,7 +16,7 @@ BufSchemeBasicsTest >> setUp [
 { #category : #tests }
 BufSchemeBasicsTest >> testBadTokenize [
 
-	self should: [ BufSToken tokenizeString: '{' ] raise: BufSParseException.
+	self should: [ BufSToken tokenizeString: '{' ] raise: BufSParseError.
 
 ]
 
@@ -24,10 +24,29 @@ BufSchemeBasicsTest >> testBadTokenize [
 BufSchemeBasicsTest >> testExtraTokens [
 
 	"we should allow extra whitespace"
-	self shouldnt: [parser parseString: '   foobar   '] raise: BufSParseException.
+	self shouldnt: [parser parseString: '   foobar   '] raise: BufSParseError.
 	"we should not allow extra tokens"
-	self should: [ parser parseString: 'foobar foobar'] raise: BufSParseException
+	self should: [ parser parseString: 'foobar foobar'] raise: BufSParseError
 
+
+]
+
+{ #category : #tests }
+BufSchemeBasicsTest >> testParseList [
+
+	|result result2|
+	result := (parser parseString: '(foo 1 2)') components.
+	self assert: (result at: 1) name equals: 'foo'.
+	self assert: (result at: 2) litValue equals: 1.
+	self assert: (result at: 3) litValue equals: 2.
+	
+	result := (parser parseString: '((foo 3 4) 1 2)') components.
+	result2 := (result at: 1) components.
+	self assert: (result2 at: 1) name equals: 'foo'.
+	self assert: (result2 at: 2) litValue equals: 3.
+	self assert: (result2 at: 3) litValue equals: 4.	
+	self assert: (result at: 2) litValue equals: 1.
+	self assert: (result at: 3) litValue equals: 2.
 
 ]
 
