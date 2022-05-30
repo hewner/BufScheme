@@ -31,6 +31,27 @@ BufSchemeBasicsTest >> testExtraTokens [
 
 ]
 
+{ #category : #'tests-compilation' }
+BufSchemeBasicsTest >> testGlobalCompilation [
+
+	|ast method universe|
+	ast := parser parseString: 'foobar'.
+	method := ast toCompiledMethod.
+	universe := SchemeUniverse new.
+	universe setGlobal: #foobar toValue: 100.
+	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 100
+]
+
+{ #category : #'tests-compilation' }
+BufSchemeBasicsTest >> testLiteralCompilation [
+
+	|ast method universe|
+	ast := parser parseString: '123'.
+	method := ast toCompiledMethod.
+	universe := SchemeUniverse new.
+	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 123
+]
+
 { #category : #tests }
 BufSchemeBasicsTest >> testParseList [
 
