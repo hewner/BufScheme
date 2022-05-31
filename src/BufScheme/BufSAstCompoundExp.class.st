@@ -9,8 +9,10 @@ Class {
 
 { #category : #'as yet unclassified' }
 BufSAstCompoundExp class >> createFromList: listOfAstNodes [
-			
-	^self new components: listOfAstNodes 
+
+	"TODO: not every compond exp is a call"
+	
+	^BufSCallExp new components: listOfAstNodes 
 ]
 
 { #category : #accessing }

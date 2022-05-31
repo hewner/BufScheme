@@ -20,6 +20,16 @@ BufSchemeBasicsTest >> testBadTokenize [
 
 ]
 
+{ #category : #'tests-compilation' }
+BufSchemeBasicsTest >> testBasicCallCompilation [
+
+	|ast method universe|
+	ast := parser parseString: '(+ 1 2)'.
+	method := ast toCompiledMethod.
+	universe := SchemeUniverse new.
+	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 3
+]
+
 { #category : #tests }
 BufSchemeBasicsTest >> testExtraTokens [
 
