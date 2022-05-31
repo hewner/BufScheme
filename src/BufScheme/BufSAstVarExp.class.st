@@ -13,6 +13,15 @@ BufSAstVarExp class >> fromSymbolToken: aSymbolToken [
 	^self new name: aSymbolToken data
 ]
 
+{ #category : #compilation }
+BufSAstVarExp >> generateIR: aIRBuilder [
+
+	aIRBuilder 
+		pushReceiver;
+		pushLiteral: name;
+		send: #getGlobal:
+]
+
 { #category : #accessing }
 BufSAstVarExp >> name [
 

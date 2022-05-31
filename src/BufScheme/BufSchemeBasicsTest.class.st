@@ -38,7 +38,7 @@ BufSchemeBasicsTest >> testGlobalCompilation [
 	ast := parser parseString: 'foobar'.
 	method := ast toCompiledMethod.
 	universe := SchemeUniverse new.
-	universe setGlobal: #foobar toValue: 100.
+	universe setGlobal: 'foobar' toValue: 100.
 	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 100
 ]
 

@@ -10,7 +10,7 @@ Class {
 { #category : #globals }
 SchemeUniverse >> getGlobal: aSymbol [
 	
-	globals at: aSymbol
+	^globals at: aSymbol
 ]
 
 { #category : #initialization }
