@@ -10,8 +10,7 @@ Class {
 { #category : #'as yet unclassified' }
 BufSAstCompoundExp class >> createFromList: listOfAstNodes [
 
-	"TODO: not every compond exp is a call"
-	
+	(listOfAstNodes first isSpecialWord: 'if') ifTrue: [ ^BufSIfExp new components: listOfAstNodes ].
 	^BufSCallExp new components: listOfAstNodes 
 ]
 

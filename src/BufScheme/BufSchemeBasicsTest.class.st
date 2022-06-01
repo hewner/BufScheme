@@ -27,7 +27,10 @@ BufSchemeBasicsTest >> testBasicCallCompilation [
 	ast := parser parseString: '(+ 1 2)'.
 	method := ast toCompiledMethod.
 	universe := SchemeUniverse new.
-	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 3
+	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 3.
+	ast := parser parseString: '(+ (+ 3 4 5) 2)'.
+	method := ast toCompiledMethod.
+	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 14.
 ]
 
 { #category : #tests }
@@ -50,6 +53,20 @@ BufSchemeBasicsTest >> testGlobalCompilation [
 	universe := SchemeUniverse new.
 	universe setGlobal: 'foobar' toValue: 100.
 	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 100
+]
+
+{ #category : #'tests-compilation' }
+BufSchemeBasicsTest >> testIfCompilation [
+
+	|ast method universe|
+	ast := parser parseString: '(if true 1 2)'.
+	method := ast toCompiledMethod.
+	universe := SchemeUniverse new.
+	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 1.
+	ast := parser parseString: '(if false 1 2)'.
+	method := ast toCompiledMethod.
+	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 2.
+	"TODO lets add some primitives so we can verify short circuting"
 ]
 
 { #category : #'tests-compilation' }

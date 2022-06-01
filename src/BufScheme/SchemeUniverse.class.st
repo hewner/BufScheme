@@ -25,6 +25,8 @@ SchemeUniverse >> getGlobal: aString [
 SchemeUniverse >> initialize [
 			
 	globals := Dictionary new.
+	globals at: 'true' put: true.
+	globals at: 'false' put: false.
 ]
 
 { #category : #prims }

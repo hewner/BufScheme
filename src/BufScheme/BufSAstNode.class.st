@@ -14,6 +14,14 @@ BufSAstNode >> generateIR: aIRBuilder [
 	
 ]
 
+{ #category : #testing }
+BufSAstNode >> isSpecialWord: name [
+
+	^false
+
+	
+]
+
 { #category : #compilation }
 BufSAstNode >> toCompiledMethod [
 
