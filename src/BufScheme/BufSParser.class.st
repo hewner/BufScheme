@@ -30,6 +30,7 @@ BufSParser >> currentList [
 BufSParser >> handleToken: aToken [
 
 	aToken isNumToken ifTrue: [ self addToCurrentList: (BufSAstLitExp fromNumToken: aToken). ^self ].
+	aToken isStringToken ifTrue: [ self addToCurrentList: (BufSAstLitExp fromStringToken: aToken). ^self ].
 	aToken isSymbolToken ifTrue: [ self addToCurrentList: (BufSAstVarExp fromSymbolToken: aToken). ^self].
 	(aToken isSpecial: '(') ifTrue: [ inProgressLists add: OrderedCollection new. ^self].
 	(aToken isSpecial: ')') ifTrue: [ | doneList |

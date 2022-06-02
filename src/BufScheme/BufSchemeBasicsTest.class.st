@@ -52,7 +52,8 @@ BufSchemeBasicsTest >> testGlobalCompilation [
 	method := ast toCompiledMethod.
 	universe := SchemeUniverse new.
 	universe setGlobal: 'foobar' toValue: 100.
-	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 100
+	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 100.
+	self should: [ method valueWithReceiver: SchemeUniverse new arguments: Array new] raise: BufSRuntimeError.
 ]
 
 { #category : #'tests-compilation' }
@@ -66,7 +67,13 @@ BufSchemeBasicsTest >> testIfCompilation [
 	ast := parser parseString: '(if false 1 2)'.
 	method := ast toCompiledMethod.
 	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 2.
-	"TODO lets add some primitives so we can verify short circuting"
+	ast := parser parseString: '(if true 1 (error "dont eval this"))'.
+	method := ast toCompiledMethod.
+	universe := SchemeUniverse new.
+	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 1.
+	ast := parser parseString: '(if false (error "dont eval this") 2)'.
+	method := ast toCompiledMethod.
+	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 2.
 ]
 
 { #category : #'tests-compilation' }
@@ -109,6 +116,16 @@ BufSchemeBasicsTest >> testParseNum [
 ]
 
 { #category : #tests }
+BufSchemeBasicsTest >> testParseString [
+
+	|result|
+	result := parser parseString: '"hello"'.
+	self assert: result litValue equals: 'hello'.
+
+
+]
+
+{ #category : #tests }
 BufSchemeBasicsTest >> testParseVarExp [
 
 	|result|
@@ -133,12 +150,12 @@ BufSchemeBasicsTest >> testTokenizeNum [
 BufSchemeBasicsTest >> testTokenizeSpecials [
 
 	| result |
-	result := BufSToken tokenizeString: '()''"'.
+	result := BufSToken tokenizeString: '()''""'.
 	self assert: result size equals: 4.
 	self assert: ((result at: 1) isSpecial: '(').
 	self assert: ((result at: 2) isSpecial: ')').
 	self assert: ((result at: 3) isSpecial: '''').
-	self assert: ((result at: 4) isSpecial: '"').
+	self assert: ((result at: 4) isStringToken).
 ]
 
 { #category : #tests }

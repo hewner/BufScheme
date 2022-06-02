@@ -29,6 +29,11 @@ BufSToken class >> nextTokenFromStream: aStream [
 	               ^ maybeToken ].
 	maybeToken ifNotNil: returnBlock.
 	maybeToken := self
+		              tryToEat: self stringRegex
+		              typedAs: #string
+		              from: aStream.
+	maybeToken ifNotNil: returnBlock.
+	maybeToken := self
 		              tryToEat: self symbolRegex
 		              typedAs: #symbol
 		              from: aStream.
@@ -59,7 +64,14 @@ BufSToken class >> spaceRegex [
 BufSToken class >> specialCharRegex [
 	"symbols with special scheme meaning"	
 			
-	^'[()"'']' asRegex 
+	^'[()'']' asRegex 
+]
+
+{ #category : #regexes }
+BufSToken class >> stringRegex [
+	"basically eat everything till the closing quote"	
+			
+	^'".*"' asRegex 
 ]
 
 { #category : #regexes }
@@ -126,6 +138,12 @@ BufSToken >> isNumToken [
 BufSToken >> isSpecial: aChar [
 
 	^type = #special and: data = aChar
+]
+
+{ #category : #testing }
+BufSToken >> isStringToken [
+
+	^type = #string
 ]
 
 { #category : #testing }

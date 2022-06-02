@@ -18,7 +18,7 @@ SchemeUniverse >> getGlobal: aString [
 	
 	^globals at: aString ifAbsent: [ (self isPrim: aString) 
 		ifTrue: [ BufSPrim newWithName: aString andUniverse: self ]
-		ifFalse: [ Error signal: 'name lookup failed'] ]
+		ifFalse: [ BufSRuntimeError signal: 'name lookup failed'] ]
 ]
 
 { #category : #initialization }

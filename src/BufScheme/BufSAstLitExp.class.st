@@ -13,6 +13,14 @@ BufSAstLitExp class >> fromNumToken: aNumToken [
 	^self new litValue: aNumToken data asNumber
 ]
 
+{ #category : #'instance creation' }
+BufSAstLitExp class >> fromStringToken: aStringToken [
+	
+	|valueWithQuotes|
+	valueWithQuotes := aStringToken data.		
+	^self new litValue: ( valueWithQuotes copyFrom: 2 to: valueWithQuotes size - 1)
+]
+
 { #category : #compilation }
 BufSAstLitExp >> generateIR: aIRBuilder [
 

@@ -25,5 +25,6 @@ BufSPrim >> initializeWithName: aString andUniverse: aUniverse [
 BufSPrim >> invokeWithArguments: anArray [
 			
 	name = '+' ifTrue: [ ^( anArray inject: 0 into: [ :sum :each | sum + each ]) ].
+	name = 'error' ifTrue: [ BufSRuntimeError signal: anArray asString ].
 	Error signal: 'unknown prim'.
 ]
