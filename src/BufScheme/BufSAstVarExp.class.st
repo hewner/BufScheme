@@ -19,7 +19,7 @@ BufSAstVarExp >> generateIR: aIRBuilder [
 	aIRBuilder 
 		pushReceiver;
 		pushLiteral: name;
-		send: #getGlobal:
+		send: #getEnvValue:
 ]
 
 { #category : #accessing }

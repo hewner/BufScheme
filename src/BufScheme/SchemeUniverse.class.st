@@ -2,10 +2,17 @@ Class {
 	#name : #SchemeUniverse,
 	#superclass : #Object,
 	#instVars : [
-		'globals'
+		'globals',
+		'environments'
 	],
 	#category : #BufScheme
 }
+
+{ #category : #environments }
+SchemeUniverse >> addEnvMapping: aString to: aValue [
+
+	self currentEnv atMapping: aString put: aValue
+]
 
 { #category : #prims }
 SchemeUniverse >> callPrim: nameSymbol withArguments: anArray [
@@ -13,7 +20,19 @@ SchemeUniverse >> callPrim: nameSymbol withArguments: anArray [
 	^self perform: nameSymbol with: anArray 
 ]
 
-{ #category : #globals }
+{ #category : #environments }
+SchemeUniverse >> currentEnv [
+
+	^environments last
+]
+
+{ #category : #environments }
+SchemeUniverse >> getEnvValue: aString [
+	
+	^self currentEnv getMapping: aString ifAbsent: [ self getGlobal: aString ]
+]
+
+{ #category : #environments }
 SchemeUniverse >> getGlobal: aString [
 	
 	^globals at: aString ifAbsent: [ (self isPrim: aString) 
@@ -27,6 +46,7 @@ SchemeUniverse >> initialize [
 	globals := Dictionary new.
 	globals at: 'true' put: true.
 	globals at: 'false' put: false.
+	environments := OrderedCollection with: BufSEnvironment rootEnvironment
 ]
 
 { #category : #prims }
@@ -43,7 +63,7 @@ SchemeUniverse >> myMethod [
 	^3
 ]
 
-{ #category : #globals }
+{ #category : #environments }
 SchemeUniverse >> setGlobal: aSymbol toValue: aValue [
 			
 	globals at: aSymbol put: aValue

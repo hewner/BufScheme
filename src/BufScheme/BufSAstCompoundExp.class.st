@@ -11,6 +11,7 @@ Class {
 BufSAstCompoundExp class >> createFromList: listOfAstNodes [
 
 	(listOfAstNodes first isSpecialWord: 'if') ifTrue: [ ^BufSIfExp new components: listOfAstNodes ].
+	(listOfAstNodes first isSpecialWord: 'let') ifTrue: [ ^BufSLetExp new components: listOfAstNodes ].
 	^BufSCallExp new components: listOfAstNodes 
 ]
 
