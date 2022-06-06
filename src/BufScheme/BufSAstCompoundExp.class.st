@@ -1,28 +1,26 @@
 Class {
 	#name : #BufSAstCompoundExp,
 	#superclass : #BufSAstNode,
-	#instVars : [
-		'components'
-	],
 	#category : #BufScheme
 }
 
 { #category : #'as yet unclassified' }
-BufSAstCompoundExp class >> createFromList: listOfAstNodes [
+BufSAstCompoundExp class >> createFromList: listOfTokens [
 
-	(listOfAstNodes first isSpecialWord: 'if') ifTrue: [ ^BufSIfExp new components: listOfAstNodes ].
-	(listOfAstNodes first isSpecialWord: 'let') ifTrue: [ ^BufSLetExp new components: listOfAstNodes ].
-	^BufSCallExp new components: listOfAstNodes 
+	self
+		if: listOfTokens matches: 'if' do: [ ^BufSIfExp fromTokens: listOfTokens ];
+		if: listOfTokens matches: 'let' do: [ ^BufSLetExp fromTokens: listOfTokens ].
+	^BufSCallExp fromTokens: listOfTokens 
 ]
 
-{ #category : #accessing }
-BufSAstCompoundExp >> components [
-
-	^ components
+{ #category : #'instance creation' }
+BufSAstCompoundExp class >> fromTokens: tokens [
+ 
+	^self subclassResponsibility
 ]
 
-{ #category : #accessing }
-BufSAstCompoundExp >> components: anObject [
+{ #category : #'as yet unclassified' }
+BufSAstCompoundExp class >> if: list matches: aName do: aBlock [
 
-	components := anObject
+	^list first data = aName ifTrue: aBlock
 ]

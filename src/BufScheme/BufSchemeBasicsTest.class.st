@@ -1,17 +1,8 @@
 Class {
 	#name : #BufSchemeBasicsTest,
 	#superclass : #TestCase,
-	#instVars : [
-		'parser'
-	],
 	#category : #BufScheme
 }
-
-{ #category : #running }
-BufSchemeBasicsTest >> setUp [
-	super setUp.
-	parser := BufSParser new.
-]
 
 { #category : #tests }
 BufSchemeBasicsTest >> testBadTokenize [
@@ -24,11 +15,11 @@ BufSchemeBasicsTest >> testBadTokenize [
 BufSchemeBasicsTest >> testBasicCallCompilation [
 
 	|ast method universe|
-	ast := parser parseString: '(+ 1 2)'.
+	ast := BufSAstNode parseToAst: '(+ 1 2)'.
 	method := ast toCompiledMethod.
 	universe := SchemeUniverse new.
 	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 3.
-	ast := parser parseString: '(+ (+ 3 4 5) 2)'.
+	ast := BufSAstNode parseToAst:'(+ (+ 3 4 5) 2)'.
 	method := ast toCompiledMethod.
 	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 14.
 ]
@@ -37,9 +28,9 @@ BufSchemeBasicsTest >> testBasicCallCompilation [
 BufSchemeBasicsTest >> testExtraTokens [
 
 	"we should allow extra whitespace"
-	self shouldnt: [parser parseString: '   foobar   '] raise: BufSParseError.
+	self shouldnt: [BufSAstNode parseToAst: '   foobar   '] raise: BufSParseError.
 	"we should not allow extra tokens"
-	self should: [ parser parseString: 'foobar foobar'] raise: BufSParseError
+	self should: [ BufSAstNode parseToAst: 'foobar foobar'] raise: BufSParseError
 
 
 ]
@@ -48,7 +39,7 @@ BufSchemeBasicsTest >> testExtraTokens [
 BufSchemeBasicsTest >> testGlobalCompilation [
 
 	|ast method universe|
-	ast := parser parseString: 'foobar'.
+	ast := BufSAstNode parseToAst: 'foobar'.
 	method := ast toCompiledMethod.
 	universe := SchemeUniverse new.
 	universe setGlobal: 'foobar' toValue: 100.
@@ -60,18 +51,18 @@ BufSchemeBasicsTest >> testGlobalCompilation [
 BufSchemeBasicsTest >> testIfCompilation [
 
 	|ast method universe|
-	ast := parser parseString: '(if true 1 2)'.
+	ast := BufSAstNode parseToAst: '(if true 1 2)'.
 	method := ast toCompiledMethod.
 	universe := SchemeUniverse new.
 	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 1.
-	ast := parser parseString: '(if false 1 2)'.
+	ast := BufSAstNode parseToAst: '(if false 1 2)'.
 	method := ast toCompiledMethod.
 	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 2.
-	ast := parser parseString: '(if true 1 (error "dont eval this"))'.
+	ast := BufSAstNode parseToAst: '(if true 1 (error "dont eval this"))'.
 	method := ast toCompiledMethod.
 	universe := SchemeUniverse new.
 	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 1.
-	ast := parser parseString: '(if false (error "dont eval this") 2)'.
+	ast := BufSAstNode parseToAst: '(if false (error "dont eval this") 2)'.
 	method := ast toCompiledMethod.
 	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 2.
 ]
@@ -80,7 +71,7 @@ BufSchemeBasicsTest >> testIfCompilation [
 BufSchemeBasicsTest >> testLetCompilation [
 
 	|ast method universe|
-	ast := parser parseString: '(let ((x 1)) x)'.
+	ast := BufSAstNode parseToAst: '(let ((x 1)) x)'.
 	method := ast toCompiledMethod.
 	universe := SchemeUniverse new.
 	self halt.
@@ -92,7 +83,7 @@ BufSchemeBasicsTest >> testLetCompilation [
 BufSchemeBasicsTest >> testLiteralCompilation [
 
 	|ast method universe|
-	ast := parser parseString: '123'.
+	ast := BufSAstNode parseToAst: '123'.
 	method := ast toCompiledMethod.
 	universe := SchemeUniverse new.
 	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 123
@@ -102,13 +93,13 @@ BufSchemeBasicsTest >> testLiteralCompilation [
 BufSchemeBasicsTest >> testParseList [
 
 	|result result2|
-	result := (parser parseString: '(foo 1 2)') components.
+	result := (BufSAstNode parseToAst: '(foo 1 2)') subexpressions .
 	self assert: (result at: 1) name equals: 'foo'.
 	self assert: (result at: 2) litValue equals: 1.
 	self assert: (result at: 3) litValue equals: 2.
 	
-	result := (parser parseString: '((foo 3 4) 1 2)') components.
-	result2 := (result at: 1) components.
+	result := (BufSAstNode parseToAst: '((foo 3 4) 1 2)') subexpressions.
+	result2 := (result at: 1) subexpressions.
 	self assert: (result2 at: 1) name equals: 'foo'.
 	self assert: (result2 at: 2) litValue equals: 3.
 	self assert: (result2 at: 3) litValue equals: 4.	
@@ -121,7 +112,7 @@ BufSchemeBasicsTest >> testParseList [
 BufSchemeBasicsTest >> testParseNum [
 
 	|result|
-	result := parser parseString: '123'.
+	result := BufSAstNode parseToAst: '123'.
 	self assert: result litValue equals: 123.
 
 
@@ -131,7 +122,7 @@ BufSchemeBasicsTest >> testParseNum [
 BufSchemeBasicsTest >> testParseString [
 
 	|result|
-	result := parser parseString: '"hello"'.
+	result := BufSAstNode parseToAst: '"hello"'.
 	self assert: result litValue equals: 'hello'.
 
 
@@ -141,8 +132,23 @@ BufSchemeBasicsTest >> testParseString [
 BufSchemeBasicsTest >> testParseVarExp [
 
 	|result|
-	result := parser parseString: 'foobar'.
+	result := BufSAstNode parseToAst: 'foobar'.
 	self assert: result name equals: 'foobar'.
+
+
+]
+
+{ #category : #tests }
+BufSchemeBasicsTest >> testTokenizeList [ 
+
+	| result |
+	result := BufSToken tokenizeString: '(a 1 2)'.
+	self assert: result size equals: 1.
+	result := result first.
+	self assert: (result at: 1) data equals: 'a'.
+	self assert: (result at: 2) data equals: '1'.
+	self assert: (result at: 3) data equals: '2'.
+
 
 
 ]
@@ -163,11 +169,10 @@ BufSchemeBasicsTest >> testTokenizeSpecials [
 
 	| result |
 	result := BufSToken tokenizeString: '()''""'.
-	self assert: result size equals: 4.
-	self assert: ((result at: 1) isSpecial: '(').
-	self assert: ((result at: 2) isSpecial: ')').
-	self assert: ((result at: 3) isSpecial: '''').
-	self assert: ((result at: 4) isStringToken).
+	self assert: result size equals: 3.
+	self assert: (result at: 1) isEmpty.
+	self assert: ((result at: 2) isSpecial: '''').
+	self assert: ((result at: 3) isStringToken).
 ]
 
 { #category : #tests }

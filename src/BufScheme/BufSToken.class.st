@@ -82,11 +82,20 @@ BufSToken class >> symbolRegex [
 ]
 
 { #category : #accessing }
-BufSToken class >> tokenizeStream: aStream toCollection: aCollection [
+BufSToken class >> tokenizeList: aStream toCollection: aCollection [
 
-	aStream atEnd ifTrue: [ ^ self ].
-	aCollection add: (self nextTokenFromStream: aStream).
-	self tokenizeStream: aStream toCollection: aCollection
+	| next |
+	aStream atEnd ifTrue: [ ^#end ].
+	next := (self nextTokenFromStream: aStream).
+	(next isSpecial: ')') ifTrue: [ ^#closeparen ].
+	(next isSpecial: '(') 
+		ifTrue: [ | subcollection subResult |  
+			subcollection := OrderedCollection  new.
+			subResult := self tokenizeList: aStream toCollection: subcollection.
+			subResult = #end ifTrue: [ BufSParseError signal: 'unmatched parens' ].
+			aCollection add: subcollection ]
+		ifFalse: [ aCollection add: next ].
+	^self tokenizeList: aStream toCollection: aCollection
 ]
 
 { #category : #'as yet unclassified' }
@@ -96,7 +105,7 @@ BufSToken class >> tokenizeString: aString [
 	result := OrderedCollection new.
 	stream := aString readStream.
 	self consumeSpaces: stream.
-	self tokenizeStream: stream toCollection: result.
+	(self tokenizeList: stream toCollection: result) = #end ifFalse: [ BufSParseError signal: 'extra close paren' ].
 	^result
 ]
 

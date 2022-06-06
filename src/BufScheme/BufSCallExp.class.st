@@ -1,14 +1,23 @@
 Class {
 	#name : #BufSCallExp,
 	#superclass : #BufSAstCompoundExp,
+	#instVars : [
+		'subexpressions'
+	],
 	#category : #BufScheme
 }
+
+{ #category : #'instance creation' }
+BufSCallExp class >> fromTokens: tokens [
+ 
+	^self new subexpressions: (tokens collect: [ : each | BufSAstNode parseExpression: each ])
+]
 
 { #category : #compilation }
 BufSCallExp >> generateIR: aIRBuilder [
 
 	| paramList invokable |
-	paramList := self components copy.
+	paramList := self subexpressions copy.
 	invokable := paramList removeFirst.
 	
 	invokable generateIR: aIRBuilder.
@@ -24,4 +33,16 @@ BufSCallExp >> generateIR: aIRBuilder [
 		 ].
 	aIRBuilder send: #invokeWithArguments:
 	
+]
+
+{ #category : #accessing }
+BufSCallExp >> subexpressions [
+
+	^ subexpressions
+]
+
+{ #category : #accessing }
+BufSCallExp >> subexpressions: anObject [
+
+	subexpressions := anObject
 ]
