@@ -22,5 +22,8 @@ BufSAstCompoundExp class >> fromTokens: tokens [
 { #category : #'as yet unclassified' }
 BufSAstCompoundExp class >> if: list matches: aName do: aBlock [
 
-	^list first data = aName ifTrue: aBlock
+	| first |
+	first := list first.
+	first isCollection ifTrue: [ ^false ].
+	^first data = aName ifTrue: aBlock
 ]

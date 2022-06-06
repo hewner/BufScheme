@@ -68,18 +68,6 @@ BufSchemeBasicsTest >> testIfCompilation [
 ]
 
 { #category : #'tests-compilation' }
-BufSchemeBasicsTest >> testLetCompilation [
-
-	|ast method universe|
-	ast := BufSAstNode parseToAst: '(let ((x 1)) x)'.
-	method := ast toCompiledMethod.
-	universe := SchemeUniverse new.
-	self halt.
-	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 1.
-
-]
-
-{ #category : #'tests-compilation' }
 BufSchemeBasicsTest >> testLiteralCompilation [
 
 	|ast method universe|

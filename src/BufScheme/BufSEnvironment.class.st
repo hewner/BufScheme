@@ -29,7 +29,7 @@ BufSEnvironment >> atMapping: aString put: aValue [
 { #category : #accessing }
 BufSEnvironment >> getMapping: aName ifAbsent: aBlock [
 
-	mappings at: aName ifAbsent: [ ^parent ifNil: aBlock ifNotNil: [ parent getMapping: aName ifAbsent: aBlock ] ]
+	^mappings at: aName ifAbsent: [ ^parent ifNil: aBlock ifNotNil: [ parent getMapping: aName ifAbsent: aBlock ] ]
 ]
 
 { #category : #initialization }
