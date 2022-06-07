@@ -56,11 +56,22 @@ SchemeUniverse >> isPrim: aName [
 	
 ]
 
-{ #category : #'as yet unclassified' }
-SchemeUniverse >> myMethod [
+{ #category : #environments }
+SchemeUniverse >> popEnv [
 
-	globals add: 2.
-	^3
+	environments removeLast 
+]
+
+{ #category : #environments }
+SchemeUniverse >> pushEnv: environment [
+
+	environments add: environment
+]
+
+{ #category : #environments }
+SchemeUniverse >> pushExtendingEnvironment [
+
+	self pushEnv: (BufSEnvironment newExtending: (self currentEnv))
 ]
 
 { #category : #environments }

@@ -41,10 +41,11 @@ BufSLetExpTest >> testLetSuperBasic [
 BufSLetExpTest >> testLetVarShadow [
 
 	|ast method universe|
-	ast := BufSAstNode parseToAst: '(let ((x 1)) (let ((x 2)) x))'.
+	"ast := BufSAstNode parseToAst: '(let ((x 1)) (let ((x 2)) x))'.
 	method := ast toCompiledMethod.
 	universe := SchemeUniverse new.
-	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 2.
+	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 2."
+	universe := SchemeUniverse new.
 	ast := BufSAstNode parseToAst: '(let ((x 1)) (let ((x 2)) x) x)'.
 	method := ast toCompiledMethod.
 	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 1.
