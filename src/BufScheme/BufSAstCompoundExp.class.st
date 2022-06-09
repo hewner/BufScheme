@@ -4,12 +4,13 @@ Class {
 	#category : #BufScheme
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #'instance creation' }
 BufSAstCompoundExp class >> createFromList: listOfTokens [
 
 	self
 		if: listOfTokens matches: 'if' do: [ ^BufSIfExp fromTokens: listOfTokens ];
-		if: listOfTokens matches: 'let' do: [ ^BufSLetExp fromTokens: listOfTokens ].
+		if: listOfTokens matches: 'let' do: [ ^BufSLetExp fromTokens: listOfTokens ];
+		if: listOfTokens matches: 'lambda' do: [ ^BufSLambdaExp fromTokens: listOfTokens ].
 	^BufSCallExp fromTokens: listOfTokens 
 ]
 
@@ -19,7 +20,7 @@ BufSAstCompoundExp class >> fromTokens: tokens [
 	^self subclassResponsibility
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'instance creation' }
 BufSAstCompoundExp class >> if: list matches: aName do: aBlock [
 
 	| first |

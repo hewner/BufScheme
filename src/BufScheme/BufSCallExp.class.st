@@ -31,7 +31,9 @@ BufSCallExp >> generateIR: aIRBuilder [
 				send: #at:put:;
 				popTop
 		 ].
-	aIRBuilder send: #invokeWithArguments:
+	aIRBuilder 
+		pushReceiver ;
+		send: #invokeWithArguments:onUniverse:
 	
 ]
 

@@ -2,27 +2,25 @@ Class {
 	#name : #BufSPrim,
 	#superclass : #Object,
 	#instVars : [
-		'name',
-		'universe'
+		'name'
 	],
 	#category : #BufScheme
 }
 
 { #category : #'instance creation' }
-BufSPrim class >> newWithName: aString andUniverse: aUniverse [
-	
-	^self new initializeWithName: aString andUniverse: aUniverse
+BufSPrim class >> newWithName: aString [
+
+	^ self new initializeWithName: aString
 ]
 
 { #category : #initialization }
-BufSPrim >> initializeWithName: aString andUniverse: aUniverse [
+BufSPrim >> initializeWithName: aString [
 
 	name := aString.
-	universe := aUniverse.
 ]
 
 { #category : #invoking }
-BufSPrim >> invokeWithArguments: anArray [
+BufSPrim >> invokeWithArguments: anArray onUniverse: aUniverse [
 			
 	name = '+' ifTrue: [ ^( anArray inject: 0 into: [ :sum :each | sum + each ]) ].
 	name = 'error' ifTrue: [ BufSRuntimeError signal: anArray asString ].

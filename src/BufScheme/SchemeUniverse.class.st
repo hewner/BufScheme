@@ -8,6 +8,16 @@ Class {
 	#category : #BufScheme
 }
 
+{ #category : #'as yet unclassified' }
+SchemeUniverse class >> evalScheme: aString [
+
+	|ast method universe|
+	ast := BufSAstNode parseToAst: aString.
+	method := ast toCompiledMethod.
+	universe := self new.
+	^method valueWithReceiver: universe arguments: Array new
+]
+
 { #category : #environments }
 SchemeUniverse >> addEnvMapping: aString to: aValue [
 
@@ -34,10 +44,11 @@ SchemeUniverse >> getEnvValue: aString [
 
 { #category : #environments }
 SchemeUniverse >> getGlobal: aString [
-	
-	^globals at: aString ifAbsent: [ (self isPrim: aString) 
-		ifTrue: [ BufSPrim newWithName: aString andUniverse: self ]
-		ifFalse: [ BufSRuntimeError signal: 'name lookup failed'] ]
+
+	^ globals at: aString ifAbsent: [ 
+		  (self isPrim: aString)
+			  ifTrue: [ BufSPrim newWithName: aString ]
+			  ifFalse: [ BufSRuntimeError signal: 'name lookup failed' ] ]
 ]
 
 { #category : #initialization }
