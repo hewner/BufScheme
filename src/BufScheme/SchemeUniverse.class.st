@@ -11,11 +11,7 @@ Class {
 { #category : #'as yet unclassified' }
 SchemeUniverse class >> evalScheme: aString [
 
-	|ast method universe|
-	ast := BufSAstNode parseToAst: aString.
-	method := ast toCompiledMethod.
-	universe := self new.
-	^method valueWithReceiver: universe arguments: Array new
+	^self new evalScheme: aString
 ]
 
 { #category : #environments }
@@ -34,6 +30,16 @@ SchemeUniverse >> callPrim: nameSymbol withArguments: anArray [
 SchemeUniverse >> currentEnv [
 
 	^environments last
+]
+
+{ #category : #'as yet unclassified' }
+SchemeUniverse >> evalScheme: aString [
+
+	|ast method |
+
+	ast := BufSAstNode parseToAst: aString.
+	method := ast toCompiledMethod.
+	^ method valueWithReceiver: self arguments: Array new.
 ]
 
 { #category : #environments }
@@ -61,12 +67,29 @@ SchemeUniverse >> initialize [
 ]
 
 { #category : #'as yet unclassified' }
-SchemeUniverse >> inspectionText [
+SchemeUniverse >> inspectionSchemeEval [
 	"This provides an editable comment of the current class"
-	<inspectorPresentationOrder: 1000 title: 'Test'>
+	<inspectorPresentationOrder: 1000 title: 'Scheme Eval'>
 	
-	^ SpTextPresenter new
-		text: 'Hello world'
+	| presenter entryBox  outputBox layout |
+	presenter := SpPresenter new.
+	layout :=  SpBoxLayout newTopToBottom.
+	outputBox := (presenter newText text: 'hello world2').
+	outputBox text: 'Scheme output appears here'.
+	outputBox beNotEditable.
+	layout add: outputBox.
+	entryBox := presenter newTextInput text: '(+ 1 2)'.
+	entryBox 
+		whenSubmitDo: [ :text | | result | 
+			result := self evalScheme: text.
+			outputBox text: outputBox text , Character cr asString ,  result asString.
+			 ].
+	
+	
+	layout add: entryBox expand: false.
+	presenter layout: layout.
+	^presenter
+	
 ]
 
 { #category : #prims }
