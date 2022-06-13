@@ -43,31 +43,19 @@ BufSLetExp >> generateIR: aIRBuilder [
 		pushReceiver;
 		send: #pushExtendingEnvironment;
 		popTop.
-	varPairs do: [ :each |
+	varPairs do: [ :each | 
 		aIRBuilder
 			pushReceiver;
 			pushLiteral: each first.
 		each second generateIR: aIRBuilder.
 		aIRBuilder
 			send: #addEnvMapping:to:;
-			popTop. 
-			Transcript show: 'adding var'
-			].
-	bodies 
-		from: 1 
-		to: bodies size - 1 
-		do: [ :each | 
-			each generateIR: aIRBuilder.
-			aIRBuilder popTop ].
-		Transcript show: 'adding last body'.
-	bodies last generateIR: aIRBuilder.
+			popTop.].
+	self generateForBodies: bodies AndBuilder: aIRBuilder.
 	aIRBuilder
 		pushReceiver;
 		send: #popEnv;
 		popTop.
-	Transcript show: 'popping env'
-		
-	
 ]
 
 { #category : #accessing }

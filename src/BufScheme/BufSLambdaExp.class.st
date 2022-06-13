@@ -22,8 +22,14 @@ BufSLambdaExp class >> fromTokens: tokens [
 
 { #category : #accessing }
 BufSLambdaExp >> bodies: astList [
+	
+	| builder |
 
-	compiledBodies := astList first toCompiledMethod
+	builder := IRBuilder new.
+	builder numArgs: 0.
+	self generateForBodies: astList AndBuilder: builder.
+	builder returnTop.
+	compiledBodies := builder ir compiledMethod.
 ]
 
 { #category : #compilation }

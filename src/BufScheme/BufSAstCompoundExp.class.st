@@ -28,3 +28,12 @@ BufSAstCompoundExp class >> if: list matches: aName do: aBlock [
 	first isCollection ifTrue: [ ^false ].
 	^first data = aName ifTrue: aBlock
 ]
+
+{ #category : #compilation }
+BufSAstCompoundExp >> generateForBodies: bodies AndBuilder: aIRBuilder [
+
+	bodies from: 1 to: bodies size - 1 do: [ :each | 
+		each generateIR: aIRBuilder.
+		aIRBuilder popTop ].
+	bodies last generateIR: aIRBuilder.
+]

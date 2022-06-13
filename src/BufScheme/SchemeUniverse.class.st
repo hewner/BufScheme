@@ -60,6 +60,15 @@ SchemeUniverse >> initialize [
 	environments := OrderedCollection with: BufSEnvironment rootEnvironment
 ]
 
+{ #category : #'as yet unclassified' }
+SchemeUniverse >> inspectionText [
+	"This provides an editable comment of the current class"
+	<inspectorPresentationOrder: 1000 title: 'Test'>
+	
+	^ SpTextPresenter new
+		text: 'Hello world'
+]
+
 { #category : #prims }
 SchemeUniverse >> isPrim: aName [
 
