@@ -35,11 +35,10 @@ BufSAstNode >> generateIR: aIRBuilder [
 	
 ]
 
-{ #category : #testing }
-BufSAstNode >> isSpecialWord: name [
+{ #category : #compilation }
+BufSAstNode >> generateRootIR: aIRBuilder [
 
-	^false
-
+	^self generateIR: aIRBuilder 
 	
 ]
 
@@ -52,5 +51,18 @@ BufSAstNode >> toCompiledMethod [
 	self generateIR: builder.
 	builder returnTop.
 	^ builder ir compiledMethod.
+	
+]
+
+{ #category : #compilation }
+BufSAstNode >> toCompiledRootMethod [
+
+	|builder|
+	builder := IRBuilder new.
+	builder numArgs: 0.
+	self generateRootIR: builder.
+	builder returnTop.
+	^ builder ir compiledMethod.
+	
 	
 ]

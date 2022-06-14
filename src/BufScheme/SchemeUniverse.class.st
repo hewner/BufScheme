@@ -32,13 +32,13 @@ SchemeUniverse >> currentEnv [
 	^environments last
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #evaluating }
 SchemeUniverse >> evalScheme: aString [
 
 	|ast method |
 
 	ast := BufSAstNode parseToAst: aString.
-	method := ast toCompiledMethod.
+	method := ast toCompiledRootMethod.
 	^ method valueWithReceiver: self arguments: Array new.
 ]
 
@@ -66,7 +66,7 @@ SchemeUniverse >> initialize [
 	environments := OrderedCollection with: BufSEnvironment rootEnvironment
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #gui }
 SchemeUniverse >> inspectionSchemeEval [
 	"This provides an editable comment of the current class"
 	<inspectorPresentationOrder: 1000 title: 'Scheme Eval'>

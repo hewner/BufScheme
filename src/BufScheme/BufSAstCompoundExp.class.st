@@ -10,7 +10,8 @@ BufSAstCompoundExp class >> createFromList: listOfTokens [
 	self
 		if: listOfTokens matches: 'if' do: [ ^BufSIfExp fromTokens: listOfTokens ];
 		if: listOfTokens matches: 'let' do: [ ^BufSLetExp fromTokens: listOfTokens ];
-		if: listOfTokens matches: 'lambda' do: [ ^BufSLambdaExp fromTokens: listOfTokens ].
+		if: listOfTokens matches: 'lambda' do: [ ^BufSLambdaExp fromTokens: listOfTokens ];
+		if: listOfTokens matches: 'define' do: [ ^BufSDefineExp fromTokens: listOfTokens ].
 	^BufSCallExp fromTokens: listOfTokens 
 ]
 

@@ -23,14 +23,6 @@ BufSAstVarExp >> generateIR: aIRBuilder [
 ]
 
 { #category : #accessing }
-BufSAstVarExp >> isSpecialWord: aName [
-
-	^name = aName
-
-
-]
-
-{ #category : #accessing }
 BufSAstVarExp >> name [
 
 	^ name
