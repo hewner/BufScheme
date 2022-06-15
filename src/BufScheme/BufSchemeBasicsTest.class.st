@@ -14,14 +14,11 @@ BufSchemeBasicsTest >> testBadTokenize [
 { #category : #'tests-compilation' }
 BufSchemeBasicsTest >> testBasicCallCompilation [
 
-	|ast method universe|
-	ast := BufSAstNode parseToAst: '(+ 1 2)'.
-	method := ast toCompiledMethod.
+	|universe|
 	universe := SchemeUniverse new.
-	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 3.
-	ast := BufSAstNode parseToAst:'(+ (+ 3 4 5) 2)'.
-	method := ast toCompiledMethod.
-	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 14.
+	self assert: (universe evalScheme: '(+ 1 2)') equals: 3.
+	self assert: (universe evalScheme: '(+ (+ 3 4 5) 2)') equals: 14.
+	 
 ]
 
 { #category : #tests }
@@ -38,43 +35,31 @@ BufSchemeBasicsTest >> testExtraTokens [
 { #category : #'tests-compilation' }
 BufSchemeBasicsTest >> testGlobalCompilation [
 
-	|ast method universe|
-	ast := BufSAstNode parseToAst: 'foobar'.
-	method := ast toCompiledMethod.
+	|universe|
 	universe := SchemeUniverse new.
 	universe setGlobal: 'foobar' toValue: 100.
-	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 100.
-	self should: [ method valueWithReceiver: SchemeUniverse new arguments: Array new] raise: BufSRuntimeError.
+	self assert: (universe evalScheme: 'foobar') equals: 100.
+	self should: [SchemeUniverse new evalScheme: 'foobar'] raise: BufSRuntimeError.
 ]
 
 { #category : #'tests-compilation' }
 BufSchemeBasicsTest >> testIfCompilation [
 
-	|ast method universe|
-	ast := BufSAstNode parseToAst: '(if true 1 2)'.
-	method := ast toCompiledMethod.
+	|universe|
 	universe := SchemeUniverse new.
-	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 1.
-	ast := BufSAstNode parseToAst: '(if false 1 2)'.
-	method := ast toCompiledMethod.
-	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 2.
-	ast := BufSAstNode parseToAst: '(if true 1 (error "dont eval this"))'.
-	method := ast toCompiledMethod.
-	universe := SchemeUniverse new.
-	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 1.
-	ast := BufSAstNode parseToAst: '(if false (error "dont eval this") 2)'.
-	method := ast toCompiledMethod.
-	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 2.
+	self assert: (universe evalScheme: '(if true 1 2)') equals: 1.
+	self assert: (universe evalScheme: '(if false 1 2)') equals: 2.
+	self assert: (universe evalScheme: '(if true 1 (error "dont eval this"))') equals: 1.
+	self assert: (universe evalScheme: '(if false (error "dont eval this") 2)') equals: 2.
 ]
 
 { #category : #'tests-compilation' }
 BufSchemeBasicsTest >> testLiteralCompilation [
 
-	|ast method universe|
-	ast := BufSAstNode parseToAst: '123'.
-	method := ast toCompiledMethod.
+	| universe|
 	universe := SchemeUniverse new.
-	self assert: (method valueWithReceiver: universe arguments: Array new) equals: 123
+	self assert: (universe evalScheme: '123') equals: 123.
+	self assert: (universe evalScheme: '"123"') equals: '123'.
 ]
 
 { #category : #tests }

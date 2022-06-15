@@ -39,6 +39,7 @@ SchemeUniverse >> evalScheme: aString [
 
 	ast := BufSAstNode parseToAst: aString.
 	method := ast toCompiledRootMethod.
+	environments := OrderedCollection with: BufSEnvironment rootEnvironment.
 	^ method valueWithReceiver: self arguments: Array new.
 ]
 
@@ -63,7 +64,6 @@ SchemeUniverse >> initialize [
 	globals := Dictionary new.
 	globals at: 'true' put: true.
 	globals at: 'false' put: false.
-	environments := OrderedCollection with: BufSEnvironment rootEnvironment
 ]
 
 { #category : #gui }
