@@ -20,6 +20,15 @@ BufSEnvironment class >> rootEnvironment [
 	^self newExtending: nil
 ]
 
+{ #category : #gui }
+BufSEnvironment >> allAssociations [
+
+	| collection |	
+	collection := OrderedCollection withAll: mappings associations.
+	parent ifNotNil: [ collection addAll: parent allAssociations ].
+	^collection
+]
+
 { #category : #accessing }
 BufSEnvironment >> atMapping: aString put: aValue [
 
@@ -37,4 +46,44 @@ BufSEnvironment >> initializeExtending: aParentEnvironment [
 
 	mappings := Dictionary new.
 	parent := aParentEnvironment 
+]
+
+{ #category : #gui }
+BufSEnvironment >> inspectionItems: aBuilder [
+
+	<inspectorPresentationOrder: 10 title: 'Mappings'>
+	| checkbox keyValueTable layout |
+	
+	keyValueTable := self keyValueTable: aBuilder.
+	checkbox := aBuilder newCheckBox
+		label: 'Display parent fields?';
+		whenChangedDo: [  :state | state 
+			ifTrue: [ keyValueTable items: self allAssociations  ]
+			ifFalse: [ keyValueTable items: mappings associations  ] ];
+		state: true;	
+		yourself.
+				
+	layout := aBuilder newBoxLayoutTopToBottom
+		add: checkbox expand: false;
+		add: keyValueTable expand: true;
+		yourself.
+		
+	^aBuilder newPresenter layout: layout; yourself
+]
+
+{ #category : #gui }
+BufSEnvironment >> keyValueTable: aBuilder [
+
+	^ aBuilder newTable
+		  addColumn: (SpStringTableColumn
+				   title: 'Key'
+				   evaluated: [ :each | 
+					   StObjectPrinter asTruncatedTextFrom: each key ]) beSortable;
+		  addColumn: (SpStringTableColumn
+				   title: 'Value'
+				   evaluated: [ :each | 
+					   StObjectPrinter asTruncatedTextFrom: each value ]) beSortable;
+		  items: (self allAssociations collect: [ :e | 
+					   StInspectorAssociationNode hostObject: e ]);
+		  yourself
 ]
