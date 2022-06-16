@@ -10,11 +10,11 @@ Class {
 }
 
 { #category : #'instance creation' }
-BufSClosure class >> newClosureWithNames: paramNames code: compiledMethod andEnvironment: aEnvironment [
+BufSClosure class >> newClosureWithNames: paramNames code: exp andEnvironment: aEnvironment [
 
 	^self new
 		names: paramNames;
-		code: compiledMethod;
+		code: exp;
 		environment: aEnvironment;
 		yourself
 ]
@@ -41,7 +41,7 @@ BufSClosure >> invokeWithArguments: aCollection onUniverse: aUniverse [
 		pushExtendingEnvironment.
 	aCollection doWithIndex: [  :each :index |
 		aUniverse addEnvMapping: (names at: index) to: each ].
-	result := code valueWithReceiver: aUniverse arguments: #().
+	result := code compiledBodies valueWithReceiver: aUniverse arguments: #().
 	aUniverse popEnv; popEnv.
 	^result
 	

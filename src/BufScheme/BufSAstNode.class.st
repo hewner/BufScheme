@@ -29,6 +29,13 @@ BufSAstNode class >> parseToAst: schemeString [
 ]
 
 { #category : #compilation }
+BufSAstNode >> decompile [
+
+	^self subclassResponsibility
+	
+]
+
+{ #category : #compilation }
 BufSAstNode >> generateIR: aIRBuilder [
 
 	^self subclassResponsibility 

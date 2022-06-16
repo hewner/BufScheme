@@ -3,6 +3,7 @@ Class {
 	#superclass : #BufSAstCompoundExp,
 	#instVars : [
 		'params',
+		'bodies',
 		'compiledBodies'
 	],
 	#category : #BufScheme
@@ -25,11 +26,26 @@ BufSLambdaExp >> bodies: astList [
 	
 	| builder |
 
+	bodies := astList.
+	
 	builder := IRBuilder new.
 	builder numArgs: 0.
 	self generateForBodies: astList AndBuilder: builder.
 	builder returnTop.
 	compiledBodies := builder ir compiledMethod.
+]
+
+{ #category : #accessing }
+BufSLambdaExp >> compiledBodies [
+	
+	^compiledBodies 
+]
+
+{ #category : #compilation }
+BufSLambdaExp >> decompile [
+
+	^'(lambda (' , (' ' join: params ) , ') ' , (' ' join: (bodies collect: [ : each | each decompile ])) , ')'
+	
 ]
 
 { #category : #compilation }
@@ -38,7 +54,7 @@ BufSLambdaExp >> generateIR: aIRBuilder [
 	aIRBuilder
 		pushLiteral: BufSClosure ;
 		pushLiteral: params ;
-		pushLiteral: compiledBodies ;
+		pushLiteral: self ;
 		pushReceiver ;
 		send: #currentEnv ;
 		send: #newClosureWithNames:code:andEnvironment:

@@ -14,6 +14,12 @@ BufSAstVarExp class >> fromSymbolToken: aSymbolToken [
 ]
 
 { #category : #compilation }
+BufSAstVarExp >> decompile [
+
+	^name
+]
+
+{ #category : #compilation }
 BufSAstVarExp >> generateIR: aIRBuilder [
 
 	aIRBuilder 

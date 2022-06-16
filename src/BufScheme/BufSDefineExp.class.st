@@ -18,6 +18,12 @@ BufSDefineExp class >> fromTokens: tokens [
 ]
 
 { #category : #compilation }
+BufSDefineExp >> decompile [ 
+
+	^'(define ' , name , ' ', valueAst decompile , ')'
+]
+
+{ #category : #compilation }
 BufSDefineExp >> generateIR: aIRBuilder [
 
 	^self generateIR: aIRBuilder withSetter: #addEnvMapping:to:

@@ -22,6 +22,17 @@ BufSAstLitExp class >> fromStringToken: aStringToken [
 ]
 
 { #category : #compilation }
+BufSAstLitExp >> decompile [
+
+	"TODO: gonna need more work for quotes"
+	
+	litValue isNumber ifTrue: [ ^litValue asString ].
+	litValue isString ifTrue: [ ^ '"' , litValue , '"' ].
+	Error signal: 'dont know how to decompile this value'
+	
+]
+
+{ #category : #compilation }
 BufSAstLitExp >> generateIR: aIRBuilder [
 
 	aIRBuilder pushLiteral: litValue 

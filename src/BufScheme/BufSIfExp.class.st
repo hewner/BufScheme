@@ -20,6 +20,13 @@ BufSIfExp class >> fromTokens: tokens [
 		
 ]
 
+{ #category : #compilation }
+BufSIfExp >> decompile [
+
+	^'(if ' , testAst decompile , ' ' , thenAst decompile , ' ' , elseAst decompile , ')'  
+	
+]
+
 { #category : #accessing }
 BufSIfExp >> elseAst [
 

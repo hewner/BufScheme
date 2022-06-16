@@ -5,6 +5,12 @@ Class {
 }
 
 { #category : #tests }
+BufSDefineExpTest >> testDecompile [
+
+	self assert: (BufSAstNode parseToAst: '(define x 1)') decompile equals: '(define x 1)'
+]
+
+{ #category : #tests }
 BufSDefineExpTest >> testNonRootDefine [
 
 	|universe|

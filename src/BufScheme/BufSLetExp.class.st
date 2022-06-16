@@ -37,6 +37,16 @@ BufSLetExp >> bodies: anObject [
 ]
 
 { #category : #compilation }
+BufSLetExp >> decompile [
+
+	| pairsDecomp |
+	pairsDecomp := varPairs collect: [ :each | '(' , each first , ' ' , each second decompile , ')'].
+
+	^'(let (' , (' ' join: pairsDecomp) , ') ' , (' ' join: (bodies collect: [:each| each decompile])) , ')'
+	
+]
+
+{ #category : #compilation }
 BufSLetExp >> generateIR: aIRBuilder [
 
 	aIRBuilder

@@ -22,6 +22,13 @@ BufSchemeBasicsTest >> testBasicCallCompilation [
 ]
 
 { #category : #tests }
+BufSchemeBasicsTest >> testDecompile [
+
+	self assert: (BufSAstNode parseToAst: '(foo 1 2 "hello")') decompile equals: '(foo 1 2 "hello")'.
+	self assert: (BufSAstNode parseToAst: '(if true 2 "hello")') decompile equals: '(if true 2 "hello")'
+]
+
+{ #category : #tests }
 BufSchemeBasicsTest >> testExtraTokens [
 
 	"we should allow extra whitespace"

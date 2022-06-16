@@ -14,6 +14,12 @@ BufSCallExp class >> fromTokens: tokens [
 ]
 
 { #category : #compilation }
+BufSCallExp >> decompile [ 
+
+	^ '(' , (' ' join: (subexpressions collect: [  :sub | sub decompile ])) , ')'
+]
+
+{ #category : #compilation }
 BufSCallExp >> generateIR: aIRBuilder [
 
 	| paramList invokable |

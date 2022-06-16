@@ -15,6 +15,12 @@ BufSLetExpTest >> setUp [
 ]
 
 { #category : #'tests-compilation' }
+BufSLetExpTest >> testDecompile [
+
+	self assert: (BufSAstNode parseToAst: '(let ((x 1) (y 2)) x y)') decompile equals: '(let ((x 1) (y 2)) x y)'
+]
+
+{ #category : #'tests-compilation' }
 BufSLetExpTest >> testLetFallback [
 
 	|method universe|

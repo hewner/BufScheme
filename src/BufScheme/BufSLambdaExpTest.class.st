@@ -5,6 +5,12 @@ Class {
 }
 
 { #category : #tests }
+BufSLambdaExpTest >> testDecompile [
+
+	self assert: (BufSAstNode parseToAst: '(lambda (x y) x y)') decompile equals: '(lambda (x y) x y)'
+]
+
+{ #category : #tests }
 BufSLambdaExpTest >> testLambdaEnv [
 
 	self assert: (SchemeUniverse evalScheme: '((let ((x 2)) (lambda () x)))') equals: 2.
