@@ -8,6 +8,21 @@ Class {
 	#category : #BufScheme
 }
 
+{ #category : #gui }
+BufSEnvironment class >> keyValueTable: aBuilder [
+
+	^ aBuilder newTable
+		  addColumn: (SpStringTableColumn
+				   title: 'Key'
+				   evaluated: [ :each | 
+					   StObjectPrinter asTruncatedTextFrom: each key ]) beSortable;
+		  addColumn: (SpStringTableColumn
+				   title: 'Value'
+				   evaluated: [ :each | 
+					   StObjectPrinter asTruncatedTextFrom: each value ]) beSortable;
+		  yourself
+]
+
 { #category : #'instance creation' }
 BufSEnvironment class >> newExtending: aParent [
 
@@ -54,7 +69,7 @@ BufSEnvironment >> inspectionItems: aBuilder [
 	<inspectorPresentationOrder: 10 title: 'Mappings'>
 	| checkbox keyValueTable layout |
 	
-	keyValueTable := self keyValueTable: aBuilder.
+	keyValueTable := self class keyValueTable: aBuilder.
 	checkbox := aBuilder newCheckBox
 		label: 'Display parent fields?';
 		whenChangedDo: [  :state | state 
@@ -69,21 +84,4 @@ BufSEnvironment >> inspectionItems: aBuilder [
 		yourself.
 		
 	^aBuilder newPresenter layout: layout; yourself
-]
-
-{ #category : #gui }
-BufSEnvironment >> keyValueTable: aBuilder [
-
-	^ aBuilder newTable
-		  addColumn: (SpStringTableColumn
-				   title: 'Key'
-				   evaluated: [ :each | 
-					   StObjectPrinter asTruncatedTextFrom: each key ]) beSortable;
-		  addColumn: (SpStringTableColumn
-				   title: 'Value'
-				   evaluated: [ :each | 
-					   StObjectPrinter asTruncatedTextFrom: each value ]) beSortable;
-		  items: (self allAssociations collect: [ :e | 
-					   StInspectorAssociationNode hostObject: e ]);
-		  yourself
 ]

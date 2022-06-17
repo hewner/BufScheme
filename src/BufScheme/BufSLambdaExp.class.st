@@ -53,13 +53,18 @@ BufSLambdaExp >> generateIR: aIRBuilder [
 
 	aIRBuilder
 		pushLiteral: BufSClosure ;
-		pushLiteral: params ;
 		pushLiteral: self ;
 		pushReceiver ;
 		send: #currentEnv ;
-		send: #newClosureWithNames:code:andEnvironment:
+		send: #newClosureWithCode:andEnvironment:
 		
 	
+]
+
+{ #category : #accessing }
+BufSLambdaExp >> isLambdaExp [ 
+
+	^true
 ]
 
 { #category : #accessing }

@@ -2,7 +2,6 @@ Class {
 	#name : #BufSClosure,
 	#superclass : #Object,
 	#instVars : [
-		'names',
 		'environment',
 		'code'
 	],
@@ -10,10 +9,9 @@ Class {
 }
 
 { #category : #'instance creation' }
-BufSClosure class >> newClosureWithNames: paramNames code: exp andEnvironment: aEnvironment [
+BufSClosure class >> newClosureWithCode: exp andEnvironment: aEnvironment [
 
 	^self new
-		names: paramNames;
 		code: exp;
 		environment: aEnvironment;
 		yourself
@@ -26,9 +24,30 @@ BufSClosure >> code: anObject [
 ]
 
 { #category : #accessing }
+BufSClosure >> codeString: schemeString [
+
+	| newAst |
+
+	newAst := BufSAstNode parseToAst: schemeString.
+	newAst isLambdaExp ifFalse: [ BufSParseError signal: 'cant modify a closure to non-closure value' ].
+	self code: newAst.
+]
+
+{ #category : #accessing }
 BufSClosure >> environment: anObject [
 
 	environment := anObject
+]
+
+{ #category : #gui }
+BufSClosure >> inspectionDecompile: aBuilder [
+
+	<inspectorPresentationOrder: 10 title: 'Scheme'>
+
+	^aBuilder newText
+		text: code decompile;
+		whenSubmitDo: [ :codeString | self codeString: codeString  ];
+		yourself
 ]
 
 { #category : #invoking }
@@ -40,15 +59,9 @@ BufSClosure >> invokeWithArguments: aCollection onUniverse: aUniverse [
 		pushEnv: environment;
 		pushExtendingEnvironment.
 	aCollection doWithIndex: [  :each :index |
-		aUniverse addEnvMapping: (names at: index) to: each ].
+		aUniverse addEnvMapping: (code params at: index) to: each ].
 	result := code compiledBodies valueWithReceiver: aUniverse arguments: #().
 	aUniverse popEnv; popEnv.
 	^result
 	
-]
-
-{ #category : #accessing }
-BufSClosure >> names: anObject [
-
-	names := anObject
 ]

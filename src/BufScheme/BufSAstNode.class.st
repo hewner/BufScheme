@@ -50,6 +50,13 @@ BufSAstNode >> generateRootIR: aIRBuilder [
 ]
 
 { #category : #compilation }
+BufSAstNode >> isLambdaExp [
+
+	^false
+	
+]
+
+{ #category : #compilation }
 BufSAstNode >> toCompiledMethod [
 
 	|builder|

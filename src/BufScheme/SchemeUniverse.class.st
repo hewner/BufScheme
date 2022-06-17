@@ -67,6 +67,17 @@ SchemeUniverse >> initialize [
 ]
 
 { #category : #gui }
+SchemeUniverse >> inspectionGlobals: aBuilder [
+	
+	<inspectorPresentationOrder: 1010 title: 'Globals'>
+	
+	^(BufSEnvironment keyValueTable: aBuilder)
+		items: globals associations;
+		yourself
+	
+]
+
+{ #category : #gui }
 SchemeUniverse >> inspectionSchemeEval [
 	"This provides an editable comment of the current class"
 	<inspectorPresentationOrder: 1000 title: 'Scheme Eval'>
